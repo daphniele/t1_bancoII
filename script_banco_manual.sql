@@ -5,25 +5,30 @@ CREATE UNLOGGED TABLE clientes_em_memoria (
   saldo NUMERIC
 );
 
-CREATE TABLE log (id_operacao BIGINT, operacao TEXT, id_cliente INT, nome TEXT, saldo NUMERIC);
+CREATE TABLE log (id_operacao SERIAL, txid_operacao BIGINT, operacao TEXT, nome TEXT, saldo NUMERIC);
+
+insert into log (txid_operacao, operacao) values (txid_current(), 'begin');
+BEGIN;
+insert into log (txid_operacao, operacao) values (txid_current(), 'begin');
 
 
+INSERT INTO clientes_em_memoria (nome, saldo) VALUES ('Cliente 1', 100.00);
+UPDATE clientes_em_memoria SET saldo = saldo + 50 WHERE id = 1;
+
+insert into log (txid_operacao, operacao) values (txid_current(), 'end');
+END;
+
+insert into log (txid_operacao, operacao, nome, saldo) values (txid_current(), 'I', 'Cliente 1', 100.00);
+insert into log (txid_operacao, operacao, nome, saldo) values (txid_current(), 'U', 'Cliente 1', 150.00);
 
 
+insert into log (txid_operacao, operacao) values (txid_current(), 'end');
 
+insert into log (txid_operacao, operacao) values (txid_current(), 'begin');
+BEGIN;
+insert into log (id_operacao, operacao) values (txid_current(), 'begin');
 
-
-
-
-
-
-
-
-
-
-
-
-
+INSERT INTO clientes_em_memoria (nome, saldo) VALUES ('Cliente 6', 600.00); 
 
 
 
@@ -37,10 +42,15 @@ BEGIN;
 insert into log (id_operacao, operacao) values (txid_current(), 'begin');
 
 INSERT INTO clientes_em_memoria (nome, saldo) VALUES ('Cliente 1', 100.00);
+
 UPDATE clientes_em_memoria SET saldo = saldo + 50 WHERE id = 1;
 
 insert into log (id_operacao, operacao) values (txid_current(), 'end');
 END;
+
+insert into log(id_operacao, operacao, id_cliente, nome, saldo) values (txid_current(), 'I', 'Cliente 1', 100.00);
+
+
 
 BEGIN;
 
