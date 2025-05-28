@@ -1,6 +1,0 @@
-1. Fazer trigger ou script que alimenta a tabela de log do banco; ok
-2. Testar se a tabela de log está correta após dar kill no banco; ok
-3. Começar programa em python:
-        - conectar no banco; ok
-        - recuperar informações da tabela log; ok
-        - simular o redo e gerar as saídas; 
